@@ -1,12 +1,9 @@
-import { reactive } from 'vue'
-
-const state = reactive({
-    widgetPosition: {
-        top: 100,
-        left: 100,
-    },
-})
-
+// src/store.js
 export default {
-    state,
-}
+    state: {
+        count: 0,
+    },
+    increment() {
+        this.state.count++;
+    },
+};

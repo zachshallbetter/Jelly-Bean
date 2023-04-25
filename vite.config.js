@@ -1,15 +1,19 @@
-const { defineConfig } = require('vite')
-const vue = require('@vitejs/plugin-vue')
+// vite.config.js
+const { resolve } = require('path');
+const { createVuePlugin } = require('@vitejs/plugin-vue');
 
-module.exports = defineConfig({
-  plugins: [vue()],
+module.exports = {
+  plugins: [createVuePlugin()],
   build: {
-    outDir: 'dist',
-    emptyOutDir: true,
-    sourcemap: true,
-    target: 'esnext',
     rollupOptions: {
-      external: require('module').builtinModules,
+      external: ['electron'],
+    },
+    emptyOutDir: true,
+    outDir: 'dist',
+  },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
     },
   },
-})
+};

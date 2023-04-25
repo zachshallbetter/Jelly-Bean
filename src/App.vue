@@ -1,16 +1,23 @@
 <template>
   <div id="app">
-    <h1>{{ title }}</h1>
     <FloatingWidget />
   </div>
 </template>
 
 <script>
+import FloatingWidget from './FloatingWidget.vue'
+
 export default {
-  data() {
-    return {
-      title: 'JellyBean App',
-    }
+  components: {
+    FloatingWidget,
   },
 }
 </script>
+
+<style>
+body {
+  margin: 0;
+  background-color: transparent;
+  user-select: none;
+}
+</style>

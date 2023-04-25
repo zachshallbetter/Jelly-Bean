@@ -1,26 +1,38 @@
 <template>
-  <div class="floating-widget" :style="style">
-    <!-- Your floating widget content goes here -->
-  </div>
+  <object
+    id="jellybean-widget"
+    type="image/svg+xml"
+    data="/jelly-bean.svg"
+    @mousedown="handleMouseDown"
+    @mouseup="handleMouseUp"
+    style="
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100px;
+      height: 100px;
+      cursor: move;
+    "
+  ></object>
 </template>
 
 <script>
+import { ipcRenderer } from 'electron'
+
 export default {
-  computed: {
-    style() {
-      return {
-        position: 'fixed',
-        top: this.$store.state.widgetPosition.top + 'px',
-        left: this.$store.state.widgetPosition.left + 'px',
-        zIndex: 9999,
-      }
+  methods: {
+    handleMouseDown() {
+      const widget = document.getElementById('jellybean-widget')
+      widget.addEventListener('mousemove', this.handleMouseMove)
+    },
+    handleMouseMove(event) {
+      ipcRenderer.send('selection-mousedown', event.clientX, event.clientY)
+    },
+    handleMouseUp() {
+      const widget = document.getElementById('jellybean-widget')
+      widget.removeEventListener('mousemove', this.handleMouseMove)
     },
   },
 }
 </script>
-
-<style scoped>
-.floating-widget {
-  /* Add your custom styling for the floating widget */
-}
-</style>
