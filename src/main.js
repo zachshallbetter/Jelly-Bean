@@ -1,23 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import FloatingWidget from './FloatingWidget.vue'
+import store from './store'
 
-createApp(App).mount('#app')
-
-
-# Create App.vue file
-cat << EOF > src/App.vue
-<template>
-  <div id="app">
-    <h1>{{ title }}</h1>
-  </div>
-</template>
-
-<script>
-export default {
-  data() {
-    return {
-      title: 'JellyBean App',
-    }
-  },
-}
-</script>
+const app = createApp(App)
+app.provide('store', store)
+app.component('FloatingWidget', FloatingWidget)
+app.mount('#app')

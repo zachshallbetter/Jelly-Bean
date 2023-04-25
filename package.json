@@ -1,20 +1,25 @@
 {
-  "dependencies": {
-    "@vitejs/plugin-vue": "^4.2.0",
-    "dotenv": "^16.0.3",
-    "electron": "^24.1.2",
-    "electron-builder": "^23.6.0",
-    "vercel": "^28.20.0",
-    "vite": "^4.3.2"
-  },
-  "name": "educator",
+  "name": "jellybean",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "electron-main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run dev",
+    "dev": "concurrently \"npm:electron\" \"npm:serve\"",
+    "electron": "electron .",
+    "serve": "vite",
+    "build": "vite build",
+    "package": "electron-builder"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "dependencies": {
+    "@vitejs/plugin-vue": "^1.0.0",
+    "electron": "^16.0.0",
+    "electron-builder": "^22.0.0",
+    "dotenv": "^10.0.0",
+    "vue": "^3.0.0",
+    "vite": "^2.0.0"
+  },
+  "devDependencies": {
+    "vercel": "^24.0.0",
+    "concurrently": "^7.0.0"
+  }
 }
