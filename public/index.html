@@ -2,19 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jellybean</title>
+    <title>Jelly Bean</title>
     <style>
         body {
             margin: 0;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background-color: transparent;
+        }
+
+        img {
+            user-drag: none;
             user-select: none;
+            -webkit-user-drag: none;
         }
     </style>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const jellyBean = document.querySelector('img');
+            let isDragging = false;
+            let offsetX = 0;
+            let offsetY = 0;
+
+            jellyBean.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                offsetX = e.clientX - jellyBean.getBoundingClientRect().left;
+                offsetY = e.clientY - jellyBean.getBoundingClientRect().top;
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    window.electron.setWindowPosition(e.screenX - offsetX, e.screenY - offsetY);
+                }
+            });
+
+            window.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+        });
+    </script>
 </head>
 <body>
-    <script src="/@vite/client"></script>
-    <script type="module" src="/src/main.js"></script>
+    <img src="./jelly-bean.png" alt="Jelly Bean" width="100" height="100">
 </body>
 </html>
