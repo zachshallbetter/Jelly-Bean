@@ -1,19 +1,18 @@
-// vite.config.js
-const { resolve } = require('path');
-const { createVuePlugin } = require('@vitejs/plugin-vue');
+import { defineConfig } from 'vite'
 
-module.exports = {
-  plugins: [createVuePlugin()],
+export default defineConfig({
+  root: 'src',
+  base: './',
   build: {
-    rollupOptions: {
-      external: ['electron'],
-    },
+    outDir: '../dist',
     emptyOutDir: true,
-    outDir: 'dist',
+    assetsDir: './',
+    sourcemap: true,
   },
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, 'src'),
-    },
+  server: {
+    port: 3000,
   },
-};
+  optimizeDeps: {
+    include: ['electron'],
+  },
+})
