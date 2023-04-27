@@ -1,69 +1,68 @@
-const { app, BrowserWindow, ipcMain, menu } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const path = require('path');
-const { createServer } = require('vite');
 
-// Handle Squirrel events for Windows
-if (require('electron-squirrel-startup')) return;
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
-require('dotenv').config();
-
-async function createWindow() {
-    // Create Vite server for development
-    const server = await createServer({
-        publicDir: path.resolve(__dirname, 'public'),
+// Use electron-reload for auto-reloading during development
+if (isDevelopment) {
+    require('electron-reload')(__dirname, {
+        electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
     });
-    await server.listen();
+}
 
+// Create a BrowserWindow instance
+function createWindow() {
     const win = new BrowserWindow({
-        width: 120,
-        height: 120,
-        frame: true,
-        transparent: false,
+        width: 170,
+        height: 150,
+        frame: false,
+        transparent: true,
+        alwaysOnTop: true,
+        background: '#00000000',
+        maximizable: false,
+        resizable: false,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+            preload: path.join(__dirname, 'main.js'),
         },
     });
 
-    // Load the Vite server URL
-    const urlToLoad = server.config.base + 'index.html';
-    console.log('URL to load:', urlToLoad);
-    win.loadURL(urlToLoad);
+    win.loadFile('index.html');
+    win.setIgnoreMouseEvents(false);
+    win.setBackgroundColor('#00000000');
 
-    // Uncomment this line for development to open DevTools
-    // win.webContents.openDevTools();
+    win.on('closed', () => {
+        app.quit();
+    });
+
+    return win;
 }
 
-app.whenReady().then(() => {
-    createWindow();
+// Ensure only one instance of the application is running
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+
+if (!gotSingleInstanceLock) {
+    app.quit();
+} else {
+    app.on('second-instance', () => {
+        app.quit();
+    });
+
+    app.on('ready', () => {
+        createWindow();
+    });
+
+    app.on('window-all-closed', () => {
+        if (process.platform !== 'darwin') {
+            app.quit();
+        }
+    });
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow();
         }
     });
-});
-
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
-
-ipcMain.on('selection-change', (event, selection) => {
-    // Handle text selection changes here
-    console.log(selection);
-});
-
-ipcMain.on('selection-mousedown', (event, x, y) => {
-    // Update widget position
-    const mainWindow = BrowserWindow.getFocusedWindow();
-    console.log('Widget position:', x, y);
-    if (mainWindow) {
-        mainWindow.webContents.send('widget-position', x, y);
-    }
-});
-
-ipcMain.on('widget-click', () => {
-    // Handle widget click event
-    console.log('Widget clicked');
-});
+}

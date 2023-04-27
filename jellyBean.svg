@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45.33 45.3">
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
   <defs>
     <style>
+      #Layer_1-2, #Layer_2 {
+        fill-opacity:1;
+        stroke:none;
+      }
       .cls-1 {
         fill: #be1e2d;
+        fill-opacity:1;
+        stroke:none;
       }
     </style>
   </defs>
