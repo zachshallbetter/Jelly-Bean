@@ -1,7 +1,10 @@
 {
   "name": "jelly-bean",
   "version": "1.0.0",
-  "main": "electron.js",
+  "main": "cli.js",
+  "bin": {
+    "bean": "./cli.js"
+  },
   "scripts": {
     "start": "electron electron.js"
   },
@@ -18,7 +21,11 @@
   "keywords": [],
   "description": "",
   "devDependencies": {
-    "electron": "^24.1.3",
     "electron-reload": "^2.0.0-alpha.1"
+  },
+  "dependencies": {
+    "electron": "^24.1.3",
+    "global-modules": "^2.0.0",
+    "yargs": "^17.7.1"
   }
 }

@@ -1,4 +1,6 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const topOption = process.argv.includes('--top=true');
+const enableLogging = process.argv.includes('--enable-logging');
 const path = require('path');
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -17,7 +19,7 @@ function createWindow() {
         height: 150,
         frame: false,
         transparent: true,
-        alwaysOnTop: true,
+        alwaysOnTop: topOption,
         background: '#00000000',
         maximizable: false,
         resizable: false,
@@ -50,10 +52,6 @@ if (!gotSingleInstanceLock) {
         app.quit();
     });
 
-    app.on('ready', () => {
-        createWindow();
-    });
-
     app.on('window-all-closed', () => {
         if (process.platform !== 'darwin') {
             app.quit();
@@ -63,6 +61,14 @@ if (!gotSingleInstanceLock) {
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow();
+        }
+    });
+
+    app.on('ready', () => {
+        createWindow();
+
+        if (enableLogging) {
+            console.log('Logging is enabled');
         }
     });
 }

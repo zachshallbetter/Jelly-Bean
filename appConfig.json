@@ -1,0 +1,5 @@
+{
+  "entry": "electron.js",
+  "alwaysOnTop": true,
+  "debug": false
+}
