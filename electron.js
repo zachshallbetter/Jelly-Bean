@@ -3,7 +3,6 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const { createDevToolsWindow } = require('./devTools');
 const enableLogging = process.argv.includes('--enable-logging');
 const path = require('path');
-// const topOption = process.argv.includes('--top=true');
 
 const isDevelopment = !config.debug;
 
@@ -28,7 +27,7 @@ function createWindow() {
     const win = new BrowserWindow({
         width: 170,
         height: 150,
-        frame: false,
+        frame: true,
         transparent: true,
         alwaysOnTop: config.alwaysOnTop,
         background: '#00000000',

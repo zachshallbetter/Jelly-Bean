@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-class PositionManager {
+class PositionHandler {
     constructor(app, filename) {
         this.storedPosition = app.getPath('userData') + '/' + filename;
     }

@@ -1,4 +1,3 @@
-const config = require('./config.json');
 const { ipcRenderer } = require('electron');
 
 // Function to handle selected text

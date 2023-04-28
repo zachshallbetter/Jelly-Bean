@@ -1,4 +1,3 @@
-const config = require('./config.json');
 const ConfigHandler = require('./handlers/configHandler');
 const SvgHandler = require('./handlers/SvgHandler');
 const ColorHandler = require('./handlers/ColorHandler');
