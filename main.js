@@ -6,4 +6,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const appInterface = new AppInterface();
 
     appInterface.toggleJellyBeanColor();
+
+    console.log(appInterface)
 });
