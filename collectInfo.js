@@ -1,16 +1,28 @@
-const fs = require('fs');
-const path = require('path');
+// collectInfo.js
 
-const packageJsonPath = path.join(__dirname, 'package.json');
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+// Function to handle selected text
+function handleSelectedText(selectedText) {
+    console.log(`Selected text: ${selectedText}`);
+    ipcRenderer.send('text-selected', selectedText);
+}
 
-console.log('Package.json dependencies:');
-console.log(packageJson.dependencies);
+// Function to handle focused input field
+function handleFocusedInput(inputElement) {
+    console.log(`Input field focused: ${inputElement}`);
+    ipcRenderer.send('input-focused', inputElement);
+}
 
-console.log('\nPackage.json devDependencies:');
-console.log(packageJson.devDependencies);
+// Add event listener for 'selectionchange' event on the document object
+document.addEventListener('selectionchange', () => {
+    const selectedText = window.getSelection().toString();
+    if (selectedText) {
+        handleSelectedText(selectedText);
+    }
+});
 
-console.log('\nProject structure:');
-fs.readdirSync(__dirname).forEach(file => {
-    console.log(file);
+// Add event listener for 'focus' event on input fields
+document.querySelectorAll('input, textarea').forEach((inputElement) => {
+    inputElement.addEventListener('focus', () => {
+        handleFocusedInput(inputElement);
+    });
 });

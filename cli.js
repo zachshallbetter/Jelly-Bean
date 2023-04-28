@@ -4,6 +4,7 @@ const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const globalModules = require('global-modules');
 const path = require('path');
+const { spawn } = require('child_process');
 
 // Check if global node_modules is in the PATH
 const hasGlobalModulesInPath = process.env.PATH.split(path.delimiter).some((p) => p === globalModules);
@@ -16,8 +17,31 @@ if (!hasGlobalModulesInPath) {
 yargs(hideBin(process.argv))
     .scriptName('bean')
     .usage('$0 <command> [options]')
-    .command(require('./commands/start'))
-    .command(require('./commands/quit'))
+    .command('start [options]', 'Start the Jelly Bean app', (yargs) => {
+        yargs.option('debug', {
+            describe: 'Enable Electron console logging',
+            type: 'boolean',
+            default: false,
+        });
+    }, (argv) => {
+        const electronPath = require('electron');
+        const appPath = path.join(__dirname, 'electron.js');
+        const args = argv.debug ? [appPath, '--debug'] : [appPath];
+        spawn(electronPath, args, { stdio: 'inherit' });
+    })
+    .command('quit', 'Quit the Jelly Bean app', () => {
+        // Implement logic to quit the Electron app
+    })
+    .command('devtools', 'Open Developer Tools', () => {
+        const electronPath = require('electron');
+        const { app } = require('electron');
+        const { spawn } = require('child_process');
+
+        const electronAppPath = path.join(__dirname, 'electron.js');
+        const devToolsArgs = [electronAppPath, '--enable-logging'];
+
+        spawn(electronPath, devToolsArgs, { stdio: 'inherit' });
+    })
     .demandCommand(1, 'Please provide a valid command.')
     .help()
     .version()

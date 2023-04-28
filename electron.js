@@ -1,9 +1,11 @@
+const config = require('./config.json');
 const { app, BrowserWindow, ipcMain } = require('electron');
-const topOption = process.argv.includes('--top=true');
+const { createDevToolsWindow } = require('./devTools');
 const enableLogging = process.argv.includes('--enable-logging');
 const path = require('path');
+// const topOption = process.argv.includes('--top=true');
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = !config.debug;
 
 // Use electron-reload for auto-reloading during development
 if (isDevelopment) {
@@ -12,6 +14,15 @@ if (isDevelopment) {
     });
 }
 
+app.on('ready', () => {
+    createWindow();
+
+    if (enableLogging) {
+        createDevToolsWindow();
+        console.log('Logging is enabled');
+    }
+});
+
 // Create a BrowserWindow instance
 function createWindow() {
     const win = new BrowserWindow({
@@ -19,7 +30,7 @@ function createWindow() {
         height: 150,
         frame: false,
         transparent: true,
-        alwaysOnTop: topOption,
+        alwaysOnTop: config.alwaysOnTop,
         background: '#00000000',
         maximizable: false,
         resizable: false,
@@ -27,8 +38,10 @@ function createWindow() {
             nodeIntegration: true,
             contextIsolation: false,
             enableRemoteModule: true,
+            webSecurity: false, // Re-enable webSecurity
             preload: path.join(__dirname, 'main.js'),
         },
+
     });
 
     win.loadFile('index.html');
@@ -38,6 +51,22 @@ function createWindow() {
     win.on('closed', () => {
         app.quit();
     });
+
+    // Listen for 'text-selected' event
+    ipcMain.on('text-selected', (event, selectedText) => {
+        console.log('Text selected in renderer process:', selectedText);
+        // Here, you can perform any necessary action with the selected text, e.g., fetch recommendations
+    });
+
+    // Listen for 'input-focused' event
+    ipcMain.on('input-focused', (event, inputElement) => {
+        console.log('Input field focused in renderer process:', inputElement);
+        // Here, you can perform any necessary action when an input field is focused
+    });
+
+    if (enableLogging) {
+        win.webContents.openDevTools({ mode: 'detach' });
+    }
 
     return win;
 }
@@ -57,18 +86,10 @@ if (!gotSingleInstanceLock) {
             app.quit();
         }
     });
-
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) {
-            createWindow();
-        }
-    });
-
-    app.on('ready', () => {
-        createWindow();
-
-        if (enableLogging) {
-            console.log('Logging is enabled');
-        }
-    });
 }
+
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+    }
+});

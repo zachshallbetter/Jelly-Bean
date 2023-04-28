@@ -1,11 +1,29 @@
+const config = require('./config.json');
 const { ipcRenderer } = require('electron');
-const AppInterface = require('./appInterface');
 
-window.addEventListener('DOMContentLoaded', () => {
-    // Get system info
-    const appInterface = new AppInterface();
+// Function to handle selected text
+function handleSelectedText(selectedText) {
+    console.log(`Selected text: ${selectedText}`);
+    ipcRenderer.send('text-selected', selectedText);
+}
 
-    appInterface.toggleJellyBeanColor();
+// Function to handle focused input field
+function handleFocusedInput(inputElement) {
+    console.log(`Input field focused: ${inputElement}`);
+    ipcRenderer.send('input-focused', inputElement);
+}
 
-    console.log(appInterface)
+// Add event listener for 'selectionchange' event on the document object
+document.addEventListener('selectionchange', () => {
+    const selectedText = window.getSelection().toString();
+    if (selectedText) {
+        handleSelectedText(selectedText);
+    }
+});
+
+// Add event listener for 'focus' event on input fields
+document.querySelectorAll('input, textarea').forEach((inputElement) => {
+    inputElement.addEventListener('focus', () => {
+        handleFocusedInput(inputElement);
+    });
 });

@@ -1,24 +1,22 @@
+const config = require('./config.json');
+const ConfigHandler = require('./handlers/configHandler');
+const SvgHandler = require('./handlers/SvgHandler');
+const ColorHandler = require('./handlers/ColorHandler');
+
 class AppInterface {
     constructor() {
         this.canvas = document.getElementById('jellyBeanCanvas');
-        this.ctx = this.canvas.getContext('2d');
+        this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
+        this.configHandler = new ConfigHandler(this.canvas);
+        this.svgHandler = new SvgHandler();
+        this.colorHandler = new ColorHandler();
         this.loadSvgToCanvas();
         this.canvas.addEventListener('click', this.toggleJellyBeanColor.bind(this));
         console.log('AppInterface constructor')
     }
 
-    async loadSvgToCanvas() {
-        const svgResponse = await fetch('jellyBean.svg');
-        const svgText = await svgResponse.text();
-        const svgBlob = new Blob([svgText], { type: 'image/svg+xml' });
-        const svgUrl = URL.createObjectURL(svgBlob);
-
-        const img = new Image();
-        img.src = svgUrl;
-        img.onload = () => {
-            this.ctx.drawImage(img, 0, 0, 48, 48);
-            URL.revokeObjectURL(svgUrl);
-        };
+    loadSvgToCanvas() {
+        this.svgHandler.loadSvgToCanvas(this.ctx, 'jellyBean.svg', 48, 48);
     }
 
     toggleJellyBeanColor() {
@@ -26,32 +24,11 @@ class AppInterface {
         const redColor = [190, 30, 45, 255];
         const blueColor = [0, 0, 255, 255];
 
-        if (this.colorsEqual(currentColor, redColor)) {
-            this.changeSvgFillColor('#0000ff');
+        if (this.colorHandler.colorsEqual(currentColor, redColor)) {
+            this.svgHandler.changeSvgFillColor(this.ctx, 'jellyBean.svg', '#0000ff', 48, 48);
         } else {
-            this.changeSvgFillColor('#be1e2d');
+            this.svgHandler.changeSvgFillColor(this.ctx, 'jellyBean.svg', '#be1e2d', 48, 48);
         }
-    }
-
-    async changeSvgFillColor(color) {
-        const svgResponse = await fetch('jellyBean.svg');
-        let svgText = await svgResponse.text();
-        svgText = svgText.replace(/fill="[^"]*"/, `fill="${color}"`);
-
-        const svgBlob = new Blob([svgText], { type: 'image/svg+xml' });
-        const svgUrl = URL.createObjectURL(svgBlob);
-
-        const img = new Image();
-        img.src = svgUrl;
-        img.onload = () => {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.drawImage(img, 0, 0, 48, 48);
-            URL.revokeObjectURL(svgUrl);
-        };
-    }
-
-    colorsEqual(color1, color2) {
-        return color1.length === color2.length && color1.every((value, index) => value === color2[index]);
     }
 }
 

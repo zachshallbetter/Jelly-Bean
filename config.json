@@ -1,0 +1,9 @@
+{
+  "entry": "electron.js",
+  "alwaysOnTop": true,
+  "debug": true,
+  "canvas": {
+    "width": 48,
+    "height": 48
+  }
+}
